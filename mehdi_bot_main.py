@@ -1,4 +1,5 @@
 import praw
+import os
 
 WRONG_SPELLING = "medhi"
 SPELLING_REPLY = "It's spelled MEHDI"
@@ -6,11 +7,11 @@ USERNAME = "mehdi_not_medhi_bot"
 
 def main():
     
-    reddit = praw.Reddit(client_id="",
-                         client_secret="",
+    reddit = praw.Reddit(client_id=os.environ.get("REDDIT_CLIENT_ID"),
+                         client_secret=os.environ.get("REDDIT_CLIENT_SECRET"),
                          user_agent="<console:MehdiBot:1.0>",
                          username=USERNAME,
-                         password="")
+                         password=os.environ.get("REDDIT_PASSWORD"))
 
     electroboom_sub = reddit.subreddit("test_for_my_bot")
 
