@@ -1,0 +1,42 @@
+name: MehdiBot
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *"
+    
+jobs:
+  prep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install pipenv
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+      - name: Install Dependencies
+        run: |
+          pipenv install
+      - name: Create ENV file
+        shell: bash
+        env:
+          REDDIT_CLIENT_ID: ${{secrets.REDDIT_CLIENT_ID}}
+          REDDIT_CLIENT_SECRET: ${{secrets.REDDIT_CLIENT_SECRET}}
+          REDDIT_PASSWORD: ${{secrets.REDDIT_PASSWORD}}
+          REDDIT_USERNAME: ${{secrets.REDDIT_USERNAME}}
+        run: |
+          touch .env
+          echo REDDIT_CLIENT_ID=$secrets.REDDIT_CLIENT_ID >> .env
+          echo REDDIT_CLIENT_SECRET=$secrets.REDDIT_CLIENT_SECRET >> .env
+          echo REDDIT_PASSWORD=$secrets.REDDIT_PASSWORD >> .env
+          echo REDDIT_USERNAME=$secrets.REDDIT_USERNAME >> .env
+          cat .env
+      - name: Run bot
+        shell: bash
+        run: |
+          pipenv run python mehdi_bot_main.py
+
